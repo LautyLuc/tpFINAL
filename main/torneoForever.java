@@ -20,23 +20,25 @@ public class torneoForever {
         cargarEquipos(arrTeams);
         cargarJugadores(arrJugadores);
 
+        System.out.println();
         System.out.println("TORNEO FOREVER");
-        System.out.println("");
+        System.out.println();
         System.out.println("los encuentros son los siguientes: ");
-        System.out.println(generateFixture(arrTeams));
+        System.out.println("___________________________________");
+        generateFixture(arrTeams);
 
-        for (int i = 0; i < arrJugadores.length; i++) {
-            System.out.println("jugador: " + (i + 1));
-            System.out.println("nombre: " + arrJugadores[i].getNombreJugador() + " " + arrJugadores[i].getApellido()
-                    + " Numero de camiseta: " + arrJugadores[i].getCamiseta());
-            System.out.println("dni: " + arrJugadores[i].getDni() + " edad: " + arrJugadores[i].getEdad());
-            System.out.println("Equipo: " + arrJugadores[i].getEquipo());
-            System.out.println("---------------------------------------------------------------------");
-        }
-        for (int j = 0; j < arrTeams.length; j++) {
-            System.out.println(arrTeams[j].getNombre());
-            System.out.println("---------------------------------------------------------------------");
-        }
+        // for (int i = 0; i < arrJugadores.length; i++) {
+        //     System.out.println("jugador: " + (i + 1));
+        //     System.out.println("nombre: " + arrJugadores[i].getNombreJugador() + " " + arrJugadores[i].getApellido()
+        //             + " Numero de camiseta: " + arrJugadores[i].getCamiseta());
+        //     System.out.println("dni: " + arrJugadores[i].getDni() + " edad: " + arrJugadores[i].getEdad());
+        //     System.out.println("Equipo: " + arrJugadores[i].getEquipo());
+        //     System.out.println("---------------------------------------------------------------------");
+        // }
+        // for (int j = 0; j < arrTeams.length; j++) {
+        //     System.out.println(arrTeams[j].getNombre());
+        //     System.out.println("---------------------------------------------------------------------");
+        // }
 
         while (opc != 0) {
             System.out.println("ingrese la opcion que desee:");
@@ -173,7 +175,7 @@ public class torneoForever {
                 }
                 String loc = teams[local].getNombre();
                 String vis = teams[visitante].getNombre();
-                rounds[fecha][partido] = loc + " vs " + vis;
+                rounds[fecha][partido] = loc + " : " + vis;
             }
         }
 
@@ -183,11 +185,11 @@ public class torneoForever {
 
     public static void printRounds(String[][] rounds) {
         for (int i = 0; i < rounds.length; i++) {
-            System.out.println("Round " + (i + 1));
+            System.out.println("Jornada " + (i + 1));
             for (int j = 0; j < rounds[i].length; j++) {
                 System.out.println(rounds[i][j]);
             }
-            System.out.println();
+            System.out.println("-----------------------------");
         }
     }
 
