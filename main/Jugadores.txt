@@ -14,7 +14,7 @@ Castro;Alberto;25;40742970;6;Golden Club FC
 M�ndez;Ricardo;29;39566561;18;Golden Club FC
 Silva;Oscar;27;36815979;23;Golden Club FC
 Navarro;Tom�s;33;36567802;15;Golden Club FC
-Molina;Cristian;38;34102708;18;Golden Club FC
+Molina;Cristian;38;34102708;21;Golden Club FC
 Ramos;Francisco;26;43238472;7;Golden Club FC
 Aguilar;Joaqu�n;31;38513633;8;Golden Club FC
 Medina;Leonardo;30;33670546;9;Golden Club FC

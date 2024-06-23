@@ -8,7 +8,7 @@ public class equipo {
     private int partPerdidos;
     private int partEmp;
     private int puntos=puntosFinales(partGanados, partEmp);
-    private jugador [] jugadores = new jugador[15];
+    private jugador [] jugadores = new jugador[14];
     
     
     

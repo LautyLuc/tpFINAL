@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -11,14 +12,14 @@ public class torneoForever {
 
         int n = 0, m = 0, opc = 1;
         n = longArrEquipos();// me toma la cantidad de equipos y me retorna la cantidad-1
-        m = longArrJug();// misma idea,pero para jugadores
+        m = longArrJug()+24;// misma idea,pero para jugadores, +24 (cada equipo puede sumar maximo 3 suplentes,3*8=24)
 
         equipo[] arrTeams = new equipo[n];
 
         jugador[] arrJugadores = new jugador[m];
 
-        cargarJugadores(arrJugadores);
-        cargarEquipos(arrTeams, arrJugadores);
+        cargarEquipos(arrTeams);
+        cargarJugadores(arrJugadores, arrTeams);
         equipo[][] encuentros;
         String[][] partidosJugados;
 
@@ -44,39 +45,70 @@ public class torneoForever {
             System.out.println("6. para ver las estadisticas basicas del torneo");
             System.out.println("7. para ver la lista completa de los jugadores");
             System.out.println("0. para salir");
+            System.out.println();
             opc = sc.nextInt();
+            System.out.println();
             switch (opc) {
                 case 1:
                     cargarFecha(encuentros, arrTeams, partidosJugados);
-                    break;
+                break;
                 case 2:
-                    break;
-                // case 3:
-                // addJug;
-                // break;
-                // case 4:
-                // posEquipos;
-                // break;
-                case 5:
+                    addJug(arrTeams, arrJugadores);
+                break;
+                case 3:
+                    //tablaEquipos;
+                break;
+                case 4:
                     resFecha(partidosJugados);
-                    break;
-                // case 6:
-                // goleadores;
-                // break;
-                // case 7:
-                // stats;
-                // break;
+                break;
+                case 5:
+                    //goleadores;
+                break;
+                case 6:
+                    //stats;
+                break;
                 case 7:
-                    mostrarJug(arrJugadores);
+                    jugPorEquipo(arrTeams);
                     break;
             }
         }
     }
 
-    public static void resFecha(String[][] jornadas) {
-        for (int i = 0; i < jornadas.length; i++) {
-            System.out.println(jornadas[i]);
+    public static void jugPorEquipo(equipo[] equipos) {
+        jugador[] jug = new jugador[15];
+        int j = 0;
+        for (int i = 0; i < equipos.length; i++) {
+            System.out.println("jugadores de: " + equipos[i].getNombre());
+            jug = equipos[i].getJugadores();
+            while (j < jug.length && jug[j] != null && jug[j].getEquipo().equals(equipos[i].getNombre())) {
+                System.out.println(jug[j].getApellido() + " " + jug[j].getCamiseta());
+                j++;
+            }
+            System.out.println("-----------------------------------");
+            j = 0;
+
         }
+    }
+
+    public static void resFecha(String[][] jornadas) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("ingrese la fecha que quiere ver: ");
+        int n = sc.nextInt();
+        if (n < 8) {
+            for (int j = 0; j < jornadas[0].length; j++) {
+                if (jornadas[n][j] != null) {
+                    System.out.println();
+                    System.out.println(jornadas[n][j]);
+                    System.out.println("-------------------------------");
+                } else {
+                    System.out.println("Jornada " + (n + 1) + ", partido " + (j + 1) + " por definir");
+                }
+            }
+        } else {
+            System.out.println("fecha invalida");
+        }
+        System.out.println("-----------------------------------");
+
     }
 
     public static void mostrarJug(jugador[] arrJug) {
@@ -92,7 +124,7 @@ public class torneoForever {
         }
     }
 
-    public static void cargarEquipos(equipo[] Teams, jugador[] arrJug) {
+    public static void cargarEquipos(equipo[] Teams) {
         FileReader equipos;
         BufferedReader lector;
         String cad;
@@ -102,11 +134,6 @@ public class torneoForever {
             lector = new BufferedReader(equipos);
             while ((cad = lector.readLine()) != null && i < Teams.length) {
                 Teams[i] = cargEquipo(cad);
-                for (int j = 0; j < arrJug.length; j++) {
-                    if (Teams[i].getNombre() == arrJug[j].getEquipo()) {
-                        Teams[i].setJugador(arrJug[j]);
-                    }
-                }
                 i++;
             }
             lector.close();
@@ -203,7 +230,7 @@ public class torneoForever {
         }
     }
 
-    public static void cargarJugadores(jugador[] arrJug) {
+    public static void cargarJugadores(jugador[] arrJug, equipo[] Teams) {
         FileReader jugador;
         BufferedReader lector;
         String cad;
@@ -213,9 +240,17 @@ public class torneoForever {
             lector = new BufferedReader(jugador);
             while ((cad = lector.readLine()) != null && i < arrJug.length) {
                 arrJug[i] = cargJug(cad);
-
                 i++;
             }
+            for (int j = 0; j < Teams.length; j++) {
+                for (int j2 = 0; j2 < arrJug.length && arrJug[j2]!=null ; j2++) {
+                    if (Teams[j].getNombre().equals(arrJug[j2].getEquipo())) {
+                        Teams[j].setJugador(arrJug[j2]);
+
+                    }
+                }
+            }
+
             lector.close();
         } catch (FileNotFoundException ex) {
             System.err.println(ex.getMessage() + " No existe el archivo");
@@ -242,32 +277,12 @@ public class torneoForever {
         return jug;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //--------------------------------------------------------------------------------------------
-    public static boolean veriEquipo(jugador[] jugadores, int numero) {
+    public static boolean veriCamiseta(jugador[] jugadores, int numero) {
         boolean b1 = false;
         for (int i = 0; i < jugadores.length; i++) {
-            if (jugadores[i] != null) {
-                if (jugadores[i].getCamiseta() == numero && b1 == false) {
-                    b1 = true;
-                } else {
-                    b1 = false;
-                }
+            if (jugadores[i] != null && jugadores[i].getCamiseta() == numero) {
+                b1 = true; // Encontró al jugador con el número de camiseta correcto
+                break; // Sale del bucle porque ya encontró al jugador
             }
         }
         return b1;
@@ -275,26 +290,28 @@ public class torneoForever {
 
     public static void cargarFecha(equipo[][] jornadas, equipo[] arrEquipos, String[][] partidosCompletados) {
         Scanner sc = new Scanner(System.in);
-        boolean b1 = false;
         equipo local, visita;
         int g1 = 0, g2 = 0, fecha = 0, partido = 0, n = 0, k = 0, goles = 0, aux1 = 0, aux2 = 0;
         jugador[] jLocal, jVisita;
         System.out.println("ingrese fecha a cargar: ");
+
         fecha = sc.nextInt() - 1;
-        System.out.println("Fecha :" + (fecha + 1));
+        System.out.println("Fecha: " + (fecha + 1));
         for (int i = 0; i < partidosCompletados.length; i++) {
             if (partido < jornadas[0].length) {
                 local = jornadas[fecha][partido];
                 visita = jornadas[fecha][partido + 1];
                 jLocal = local.getJugadores();
                 jVisita = visita.getJugadores();
-                System.out.println("goles de " + local + ":");
+                System.out.println(local.getNombre() + " : " + visita.getNombre());
+                System.out.println();
+                System.out.println("goles de " + local.getNombre() + ":");
                 g1 = sc.nextInt();
                 aux1 = g1;
                 while (g1 > 0) {
                     System.out.println("camiseta del jugador: ");
                     n = sc.nextInt();
-                    if (veriEquipo(jLocal, n)) {
+                    if (veriCamiseta(jLocal, n)) {
                         while (k < jLocal.length && jLocal[k] != null) {
                             if (jLocal[k].getCamiseta() == n) {
                                 System.out.println(
@@ -306,19 +323,19 @@ public class torneoForever {
                             k++;
                         }
                     } else {
-                        System.out.println("el jugador no existe en " + local);
+                        System.out.println("el jugador no existe en " + local.getNombre());
                     }
                 }
                 k = 0;
                 n = 0;
                 goles = 0;
-                System.out.println("ingrese goles de " + visita + ":");
+                System.out.println("ingrese goles de " + visita.getNombre() + ":");
                 g2 = sc.nextInt();
                 aux2 = g2;
                 while (g2 > 0) {
                     System.out.println("camiseta del jugador: ");
                     n = sc.nextInt();
-                    if (veriEquipo(jVisita, n)) {
+                    if (veriCamiseta(jVisita, n)) {
                         while (k < jVisita.length && jVisita[k] != null) {
                             if (jVisita[k].getCamiseta() == n) {
                                 System.out.println(
@@ -330,9 +347,12 @@ public class torneoForever {
                             k++;
                         }
                     } else {
-                        System.out.println("el jugador no existe en " + visita);
+                        System.out.println("el jugador no existe en " + visita.getNombre());
                     }
                 }
+                k = 0;
+                n = 0;
+                goles = 0;
                 partidosCompletados[fecha][i] = local.getNombre() + " " + aux1 + " " + " : " + aux2 + " "
                         + visita.getNombre();
                 partido += 2;
@@ -341,5 +361,98 @@ public class torneoForever {
         }
 
     }
+
+    public static void addJug(equipo[] arrEquipo, jugador[] arrJug){
+        Scanner sc=new Scanner(System.in);
+        String equipo="";
+        equipo unEquipo=new equipo("", "");
+        jugador jug =new jugador("", "", 0, 0, 0, "", 0);
+        jugador[] equipoJug= new jugador[15];
+        boolean b1=false;
+        int i=0;
+        while (b1==false) {
+            System.out.println("Ingrese el equipo al que desea añadir el jugador: ");
+            System.out.println("Pikadura FC, Los Pildoritas, Golden Club FC, Manzana Mecanica, Dream Team, El Perla Negra, Armando Lio, Desactivados");
+            equipo=sc.nextLine();
+            if (veriEquipo(equipo, arrEquipo)) {
+                while (!b1) {
+                    if (equipo.equalsIgnoreCase(arrEquipo[i].getNombre())) {
+                        b1=true;
+                        unEquipo=arrEquipo[i];
+                        equipoJug=arrEquipo[i].getJugadores();
+                    }else{
+                        i++;
+                    }
+                }
+            }else{
+                System.out.println("el equipo ingresado no es valido, pruebe otra vez");
+            }
+        }if (b1==true) {
+            jug=nuevoJugador(arrJug,unEquipo,arrJug);
+        }
+        System.out.println("jugador cargado =D");
+    }
+    
+    public static jugador nuevoJugador(jugador[] arrJug,equipo unEquipo,jugador[] eqJug){
+        Scanner sc=new Scanner(System.in);
+        jugador unJugador=new jugador(null, null, 0, 0, 0, null, 0);
+        int cam=0,dni=0,edad=0;
+        String apellido="",nombre="";
+        String suEquipo=unEquipo.getNombre();
+        boolean b1=false,b2=false;
+        while (!b1) {
+            System.out.println("ingrese el DNI");
+            dni=sc.nextInt();
+                if (veriDni(dni,arrJug)) {
+                    b1=true;
+                    System.out.println("Ingrese nombre");
+                    nombre=sc.nextLine();
+                    sc.next();
+                    System.out.println("Ingrese apellido");
+                    apellido=sc.nextLine();
+                    sc.next();
+                    System.out.println("ingrese edad");
+                    edad=sc.nextInt();
+                }else{
+                    System.out.println("El DNI ya pertenece a otro jugador");
+                }
+        }
+        while (!b2) {
+            System.out.println("Ingrese el numero de camiseta deseado");
+            cam=sc.nextInt();
+            if (veriCamiseta(eqJug, cam)) {
+                    System.out.println("la camiseta ya existe, ingrese otra");
+                } else {
+                    b2=true;
+                }
+        }
+        unJugador=new jugador(apellido, nombre, edad, dni, cam, suEquipo, 0);
+        return unJugador;
+    } 
+    
+    public static boolean veriDni(int dni, jugador[] arrJug){
+        int i=0;
+        boolean b1=true;
+        while (b1 && arrJug[i]!=null) {
+            if (dni==arrJug[i].getDni()) {
+                b1=false;
+            }else{
+                i++;
+            }
+        }
+        return b1;
+    }
+
+    public static boolean veriEquipo(String team,equipo[] arrEquipos){
+        boolean b1=false;
+        int i=0;
+        while (!b1 && i<arrEquipos.length) {
+            b1=team.equalsIgnoreCase(arrEquipos[i].getNombre());
+            i++;
+            }
+        
+        return b1;
+    }
+
 
 }
