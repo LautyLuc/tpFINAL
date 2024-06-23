@@ -14,31 +14,25 @@ public class torneoForever {
         m = longArrJug();// misma idea,pero para jugadores
 
         equipo[] arrTeams = new equipo[n];
-        ;
+
         jugador[] arrJugadores = new jugador[m];
 
-        cargarEquipos(arrTeams);
         cargarJugadores(arrJugadores);
+        cargarEquipos(arrTeams, arrJugadores);
+        equipo[][] encuentros;
+        String[][] partidosJugados;
+
+        encuentros = generateFixture(arrTeams);
+        partidosJugados = new String[7][4];
 
         System.out.println();
         System.out.println("TORNEO FOREVER");
         System.out.println();
-        System.out.println("los encuentros son los siguientes: ");
-        System.out.println("___________________________________");
-        generateFixture(arrTeams);
 
-        // for (int i = 0; i < arrJugadores.length; i++) {
-        //     System.out.println("jugador: " + (i + 1));
-        //     System.out.println("nombre: " + arrJugadores[i].getNombreJugador() + " " + arrJugadores[i].getApellido()
-        //             + " Numero de camiseta: " + arrJugadores[i].getCamiseta());
-        //     System.out.println("dni: " + arrJugadores[i].getDni() + " edad: " + arrJugadores[i].getEdad());
-        //     System.out.println("Equipo: " + arrJugadores[i].getEquipo());
-        //     System.out.println("---------------------------------------------------------------------");
-        // }
-        // for (int j = 0; j < arrTeams.length; j++) {
-        //     System.out.println(arrTeams[j].getNombre());
-        //     System.out.println("---------------------------------------------------------------------");
-        // }
+        for (int j = 0; j < arrTeams.length; j++) {
+            System.out.println(arrTeams[j].getNombre());
+            System.out.println("---------------------------------------------------------------------");
+        }
 
         while (opc != 0) {
             System.out.println("ingrese la opcion que desee:");
@@ -53,34 +47,52 @@ public class torneoForever {
             opc = sc.nextInt();
             switch (opc) {
                 case 1:
-                    generateFixture(arrTeams);
+                    cargarFecha(encuentros, arrTeams, partidosJugados);
                     break;
-                // case 2:
-                // resultadosFecha;
-                // break;
+                case 2:
+                    break;
                 // case 3:
                 // addJug;
                 // break;
                 // case 4:
                 // posEquipos;
                 // break;
-                // case 5:
-                // resFecha;
-                // break;
+                case 5:
+                    resFecha(partidosJugados);
+                    break;
                 // case 6:
                 // goleadores;
                 // break;
                 // case 7:
                 // stats;
                 // break;
-                // case 8:
-                // listJug;
-                // break;
+                case 7:
+                    mostrarJug(arrJugadores);
+                    break;
             }
         }
     }
 
-    public static void cargarEquipos(equipo[] Teams) {
+    public static void resFecha(String[][] jornadas) {
+        for (int i = 0; i < jornadas.length; i++) {
+            System.out.println(jornadas[i]);
+        }
+    }
+
+    public static void mostrarJug(jugador[] arrJug) {
+        jugador jug = new jugador(null, null, 0, 0, 0, null, 0);
+        for (int i = 0; i < arrJug.length; i++) {
+            jug = arrJug[i];
+            System.out.println("jugador: " + (i + 1));
+            System.out.println("nombre: " + jug.getNombreJugador() + " " + jug.getApellido() + " Numero de camiseta: "
+                    + jug.getCamiseta());
+            System.out.println("dni: " + jug.getDni() + " edad: " + jug.getEdad());
+            System.out.println("Equipo: " + jug.getEquipo());
+            System.out.println("---------------------------------------------------------------------");
+        }
+    }
+
+    public static void cargarEquipos(equipo[] Teams, jugador[] arrJug) {
         FileReader equipos;
         BufferedReader lector;
         String cad;
@@ -90,6 +102,11 @@ public class torneoForever {
             lector = new BufferedReader(equipos);
             while ((cad = lector.readLine()) != null && i < Teams.length) {
                 Teams[i] = cargEquipo(cad);
+                for (int j = 0; j < arrJug.length; j++) {
+                    if (Teams[i].getNombre() == arrJug[j].getEquipo()) {
+                        Teams[i].setJugador(arrJug[j]);
+                    }
+                }
                 i++;
             }
             lector.close();
@@ -155,41 +172,34 @@ public class torneoForever {
         return num;
     }
 
-    public static void generateFixture(equipo[] teams) {
+    public static equipo[][] generateFixture(equipo[] teams) {
         int cantEquipos = teams.length;
-
-        /* Calculo cantidad de Fechas y cantidad de partidos por fecha */
         int cantFechas = cantEquipos - 1;
-        int partidosPorFecha = cantEquipos / 2;
-
-        /* Creo una matriz */
-        String[][] rounds = new String[cantFechas][partidosPorFecha];
-
+        equipo[][] encuentros = new equipo[cantFechas][8];
         for (int fecha = 0; fecha < cantFechas; fecha++) {
-            for (int partido = 0; partido < partidosPorFecha; partido++) {
-                int local = (fecha + partido) % (cantEquipos - 1);
-                int visitante = (cantEquipos - 1 - partido + fecha) % (cantEquipos - 1);
-
-                if (partido == 0) {
+            for (int j = 0; j < 8; j = j + 2) {
+                int local = (fecha + j) % (cantEquipos - 1);
+                int visitante = (cantEquipos - 1 - j + fecha) % (cantEquipos - 1);
+                if (j == 0) {
                     visitante = cantEquipos - 1;
                 }
-                String loc = teams[local].getNombre();
-                String vis = teams[visitante].getNombre();
-                rounds[fecha][partido] = loc + " : " + vis;
+                encuentros[fecha][j] = teams[local];
+                encuentros[fecha][j + 1] = teams[visitante];
             }
         }
 
-        // imprimo la matriz
-        printRounds(rounds);
+        return encuentros;
     }
 
-    public static void printRounds(String[][] rounds) {
-        for (int i = 0; i < rounds.length; i++) {
-            System.out.println("Jornada " + (i + 1));
-            for (int j = 0; j < rounds[i].length; j++) {
-                System.out.println(rounds[i][j]);
+    public static void partidos(equipo[][] encuentros) {
+        for (int i = 0; i < encuentros.length; i++) {
+            System.out.println("Encuentro " + (i + 1));
+            for (int j = 0; j < encuentros[i].length - 1; j = j + 2) {
+                System.out
+                        .println(encuentros[i][j].getNombre() + " : " + encuentros[i][j + 1].getNombre());
             }
-            System.out.println("-----------------------------");
+            System.out.println();
+            System.out.println("---------------------------------------------------------------------");
         }
     }
 
@@ -203,6 +213,7 @@ public class torneoForever {
             lector = new BufferedReader(jugador);
             while ((cad = lector.readLine()) != null && i < arrJug.length) {
                 arrJug[i] = cargJug(cad);
+
                 i++;
             }
             lector.close();
@@ -214,7 +225,7 @@ public class torneoForever {
     }
 
     public static jugador cargJug(String linea) {
-        jugador jug = new jugador("", "", 0, 0, 0, "");
+        jugador jug = new jugador("", "", 0, 0, 0, "", 0);
         String[] separador = linea.split(";");
         String nombre = "", apellido = "", suEquipo = "";
         int edad = 0, dni = 0, camiseta = 0;
@@ -225,18 +236,110 @@ public class torneoForever {
             dni = Integer.parseInt(separador[3]);
             camiseta = Integer.parseInt(separador[4]);
             suEquipo = separador[5];
-            jug = new jugador(nombre, apellido, edad, dni, camiseta, suEquipo);
+
         }
+        jug = new jugador(nombre, apellido, edad, dni, camiseta, suEquipo, 0);
         return jug;
     }
 
-    public static boolean veriEquipo(String Team, String Jug) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //--------------------------------------------------------------------------------------------
+    public static boolean veriEquipo(jugador[] jugadores, int numero) {
         boolean b1 = false;
-        if (Team.compareTo(Jug) == 0) {
-            b1 = true;
-        } else {
-            b1 = false;
+        for (int i = 0; i < jugadores.length; i++) {
+            if (jugadores[i] != null) {
+                if (jugadores[i].getCamiseta() == numero && b1 == false) {
+                    b1 = true;
+                } else {
+                    b1 = false;
+                }
+            }
         }
         return b1;
     }
+
+    public static void cargarFecha(equipo[][] jornadas, equipo[] arrEquipos, String[][] partidosCompletados) {
+        Scanner sc = new Scanner(System.in);
+        boolean b1 = false;
+        equipo local, visita;
+        int g1 = 0, g2 = 0, fecha = 0, partido = 0, n = 0, k = 0, goles = 0, aux1 = 0, aux2 = 0;
+        jugador[] jLocal, jVisita;
+        System.out.println("ingrese fecha a cargar: ");
+        fecha = sc.nextInt() - 1;
+        System.out.println("Fecha :" + (fecha + 1));
+        for (int i = 0; i < partidosCompletados.length; i++) {
+            if (partido < jornadas[0].length) {
+                local = jornadas[fecha][partido];
+                visita = jornadas[fecha][partido + 1];
+                jLocal = local.getJugadores();
+                jVisita = visita.getJugadores();
+                System.out.println("goles de " + local + ":");
+                g1 = sc.nextInt();
+                aux1 = g1;
+                while (g1 > 0) {
+                    System.out.println("camiseta del jugador: ");
+                    n = sc.nextInt();
+                    if (veriEquipo(jLocal, n)) {
+                        while (k < jLocal.length && jLocal[k] != null) {
+                            if (jLocal[k].getCamiseta() == n) {
+                                System.out.println(
+                                        "ingrese la cantidad de goles que convirtio " + jLocal[k].getNombreJugador());
+                                goles = sc.nextInt();
+                                jLocal[k].setGoles(goles);
+                                g1 = g1 - goles;
+                            }
+                            k++;
+                        }
+                    } else {
+                        System.out.println("el jugador no existe en " + local);
+                    }
+                }
+                k = 0;
+                n = 0;
+                goles = 0;
+                System.out.println("ingrese goles de " + visita + ":");
+                g2 = sc.nextInt();
+                aux2 = g2;
+                while (g2 > 0) {
+                    System.out.println("camiseta del jugador: ");
+                    n = sc.nextInt();
+                    if (veriEquipo(jVisita, n)) {
+                        while (k < jVisita.length && jVisita[k] != null) {
+                            if (jVisita[k].getCamiseta() == n) {
+                                System.out.println(
+                                        "ingrese la cantidad de goles que convirtio " + jVisita[k].getNombreJugador());
+                                goles = sc.nextInt();
+                                jVisita[k].setGoles(goles);
+                                g2 = g2 - goles;
+                            }
+                            k++;
+                        }
+                    } else {
+                        System.out.println("el jugador no existe en " + visita);
+                    }
+                }
+                partidosCompletados[fecha][i] = local.getNombre() + " " + aux1 + " " + " : " + aux2 + " "
+                        + visita.getNombre();
+                partido += 2;
+                System.out.println();
+            }
+        }
+
+    }
+
 }

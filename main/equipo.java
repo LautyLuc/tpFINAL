@@ -8,7 +8,10 @@ public class equipo {
     private int partPerdidos;
     private int partEmp;
     private int puntos=puntosFinales(partGanados, partEmp);
-
+    private jugador [] jugadores = new jugador[15];
+    
+    
+    
     //contructores ------------------------
     public equipo(String suNombre,String cat){
         nombre=suNombre;
@@ -52,6 +55,9 @@ public class equipo {
     public int getPartEmp(){
         return partEmp;       
     }
+    public jugador[] getJugadores() {
+    return jugadores;
+    }
 
     //mod----------------------------------
     public void setNombre(String suNombre){
@@ -74,6 +80,17 @@ public class equipo {
     }
     public void setEmpates(int partEmp){
         partEmp=this.partEmp;
+    }
+    public void setJugador(jugador jug) {
+        int i=0;
+        boolean b1=false;
+        while (b1==false && i < this.jugadores.length) {
+            if (this.jugadores[i]==null) {
+                this.jugadores[i]=jug;
+                b1=true;
+            }
+            i++;
+        }
     }
     //prop tipo----------------------------
     public int difG ( int gF , int gC ) {

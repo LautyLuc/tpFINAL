@@ -8,14 +8,16 @@ public class jugador {
     private String suEquipo;
 
     //contructores-------------------------
-    public jugador(String nombreJugador, String apellido, int edad, int dni, int camiseta, String suEquipo){
-        nombreJugador=this.nombreJugador;
-        apellido=this.apellido;
-        edad=this.edad;
-        dni=this.dni;
-        camiseta=this.camiseta;
-        suEquipo=this.suEquipo;
+    public jugador(String apellido, String nombreJugador, int edad, int dni, int camiseta, String suEquipo,int goles){
+        this.nombreJugador=nombreJugador;
+        this.apellido=apellido;
+        this.edad=edad;
+        this.dni=dni;
+        this.camiseta=camiseta;
+        this.suEquipo=suEquipo;
+        this.goles=goles;
     }
+    
 
     //obs----------------------------------
     public String getNombreJugador(){
@@ -36,31 +38,31 @@ public class jugador {
     public int getCamiseta(){
         return camiseta;
     }
-    public int goles(){
+    public int getGoles(){
         return goles;
     }
 
     //mod----------------------------------
     public void setNombreJugador(String nombreJugador){
-        nombreJugador=this.nombreJugador;
+        this.nombreJugador=nombreJugador;
     }
     public void setApellido(String apellido){
-        apellido=this.apellido;
+        this.apellido=apellido;
     }
     public void setEquipo(String suEquipo){
-        suEquipo=this.suEquipo;
+        this.suEquipo=suEquipo;
     }
     public void setEdad(int edad){
-        edad=this.edad;
+        this.edad=edad;
     }
     public void setDni(int dni){
-        dni=this.dni;
+        this.dni=dni;
     }
     public void setCamiseta(int camiseta){
-        camiseta=this.camiseta;
+        this.camiseta=camiseta;
     }
     public void setGoles(int goles){
-        goles=this.goles;
+        this.goles+=goles;
     }
 
 }
