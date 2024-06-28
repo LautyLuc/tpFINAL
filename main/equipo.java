@@ -67,10 +67,10 @@ public class equipo {
         categoria=cat;
     }
     public void setGolesEncajados(int golesEncajados){
-        golesEncajados=this.golesEncajados;
+        this.golesEncajados+=golesEncajados;
     }
     public void setGolesMarcados(int golesMarcados){
-        golesMarcados=this.golesMarcados;
+        this.golesMarcados+=golesMarcados;
     }
     public void setGanados(){
         partGanados++;
@@ -91,6 +91,12 @@ public class equipo {
             }
             i++;
         }
+    }
+    public void setPuntos(){
+        puntos=puntosFinales(partGanados,partEmp);
+    }
+    public void setDif(){
+        difGoles=difG(golesMarcados, golesEncajados);
     }
     //prop tipo----------------------------
     public int difG ( int gF , int gC ) {
