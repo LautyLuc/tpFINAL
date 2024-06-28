@@ -3,11 +3,11 @@ public class equipo {
     private String categoria;
     private int golesMarcados;
     private int golesEncajados;
-    private int difGoles=difG(golesMarcados, golesEncajados);
+    private int difGoles;
     private int partGanados;
     private int partPerdidos;
     private int partEmp;
-    private int puntos=puntosFinales(partGanados, partEmp);
+    private int puntos;
     private jugador [] jugadores = new jugador[14];
     
     
@@ -72,14 +72,14 @@ public class equipo {
     public void setGolesMarcados(int golesMarcados){
         golesMarcados=this.golesMarcados;
     }
-    public void setGanados(int partGanados){
-        partGanados=this.partGanados;
+    public void setGanados(){
+        partGanados++;
     }
-    public void setPerdidos(int partPerdidos){
-        partPerdidos=this.partPerdidos;
+    public void setPerdidos(){
+        partPerdidos++;
     }
-    public void setEmpates(int partEmp){
-        partEmp=this.partEmp;
+    public void setEmpates(){
+        partEmp++;
     }
     public void setJugador(jugador jug) {
         int i=0;
